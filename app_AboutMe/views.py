@@ -26,5 +26,6 @@ def about_me(request):
             'cv': about_me_info.cv_en,
         }
 
-    return render(request, 'about_me.html', context)
+    #return render(request, 'about_me.html', context)
+    return render(request, 'app_AboutMe/about_me.html', context)
 

@@ -7,9 +7,9 @@ class AboutMe(models.Model):
     description_en = models.TextField(verbose_name="Description in English")
     bio_nl = models.TextField(verbose_name="Bio in Dutch")
     bio_en = models.TextField(verbose_name="Bio in English")
-    photo = models.ImageField(upload_to='photos/')
-    cv_nl = models.FileField(upload_to='cv/', verbose_name="CV in Dutch",  null=True, blank=True)
-    cv_en = models.FileField(upload_to='cv/', verbose_name="CV in English", null=True, blank=True)
+    photo = models.ImageField(upload_to='media/')
+    cv_nl = models.FileField(upload_to='media/', verbose_name="CV in Dutch",  null=True, blank=True)
+    cv_en = models.FileField(upload_to='media/', verbose_name="CV in English", null=True, blank=True)
 
     def __str__(self):
         return self.title_en
