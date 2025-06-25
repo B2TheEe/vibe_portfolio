@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Skills</title>
+    <style>
+    .stars {
+        color: gold;
+        font-size: 20px;
+    }
+    </style>
+
+</head>
+<body>
+    <h1>Skills</h1>
+    {% for category in categories %}
+    <div>
+        <h2>{{ category.name }}</h2>
+        <ul>
+            {% for skill in category.skills %}
+            <li>
+                {% if skill.icon %}
+                <img src="{{ skill.icon }}" alt="{{ skill.name }}" width="50" height="50">
+                {% endif %}
+                <h3>{{ skill.name }}</h3>
+                <p>{{ skill.description }}</p>
+                <p>
+                    Level:
+                    <span class="stars">
+                    {% for star in "12345" %}
+                         {% if forloop.counter <= skill.level %}
+                             ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                    </span>
+
+                </p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+</body>
+</html>
