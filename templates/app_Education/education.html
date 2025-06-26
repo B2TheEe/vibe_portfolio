@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Education</title>
+</head>
+<body>
+    <h1>Education</h1>
+    <ul>
+        {% for education in educations %}
+        <li>
+
+            <img src="{{ education.logo.url }}" alt="{{ education.institution }}" width="75px" height="75px">
+
+            <h2>{{ education.title }}</h2>
+            <h3>{{ education.institution }}</h3>
+            <p>{{ education.description }}</p>
+            <p>
+                {{ education.start_date }} -
+                {% if education.is_current %}
+                    Present
+                {% else %}
+                    {{ education.end_date }}
+                {% endif %}
+            </p>
+            {% if education.propedeuse_date %}
+                <p>Propedeuse Date: {{ education.propedeuse_date }}</p>
+            {% endif %}
+            {% if education.diploma_date %}
+                <p>Diploma Date: {{ education.diploma_date }}</p>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
