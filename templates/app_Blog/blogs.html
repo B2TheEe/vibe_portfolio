@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+</head>
+<body>
+    <h1>Blog</h1>
+    {% for post in posts %}
+    <article>
+        <h2>{{ post.title }}</h2>
+        {% for image in post.images.all %}
+            <img src="{{ image.image.url }}" alt="{{ post.title }}" width="200">
+        {% endfor %}
+        <div>{{ post.content|safe }}</div>
+        <p>Created at: {{ post.created_at }}</p>
+        <p>Updated at: {{ post.updated_at }}</p>
+    </article>
+    {% endfor %}
+</body>
+</html>
