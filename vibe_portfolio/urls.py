@@ -26,9 +26,11 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
+path('admin/', admin.site.urls),
     path('about/', include('app_AboutMe.urls')),
     path('skills/', include('app_Skills.urls')),
     path("education", include('app_Education.urls')),
+    path('work/', include('app_Work.urls')),
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
