@@ -31,8 +31,6 @@ path('admin/', admin.site.urls),
     path('skills/', include('app_Skills.urls')),
     path("education", include('app_Education.urls')),
     path('work/', include('app_Work.urls')),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('blog/', include('app_Blog.urls')),
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
