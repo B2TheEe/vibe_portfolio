@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Education</title>
-</head>
-<body>
+{% extends "app_All/header.html" %}
+ {% block content %}
     <h1>Education</h1>
     <ul>
         {% for education in educations %}
@@ -32,5 +27,4 @@
         </li>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}

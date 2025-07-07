@@ -1,0 +1,12 @@
+{% extends "app_All/header.html" %}
+ {% block content %}
+    <h1>Blog Posts</h1>
+    {% for post in posts %}
+       {{ post }}
+
+        <div>
+            <h2><a href="{% url 'app_Blog:blog_post_detail' pk=post.pk %}">{{ post.title  }}</a></h2>
+            <p>{{ post.published_date }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}

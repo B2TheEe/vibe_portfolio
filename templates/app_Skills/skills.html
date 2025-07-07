@@ -1,17 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Skills</title>
-    <style>
-    .stars {
-        color: gold;
-        font-size: 20px;
-    }
-    </style>
-
-</head>
-<body>
+{% extends "app_All/header.html" %}
+ {% block content %}
     <h1>Skills</h1>
     {% for category in categories %}
     <div>
@@ -42,5 +30,4 @@
         </ul>
     </div>
     {% endfor %}
-</body>
-</html>
+{% endblock %}

@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
-<body>
+{% extends "app_All/header.html" %}
+ {% block content %}
     <h1>{{ title }}</h1>
     <p>{{ description }}</p>
     <p>{{ bio }}</p>
     <img src="{{ photo.url }}" width="250px" height="200px" alt="Photo of Me">
     <a href="{{ cv.url }}">Download CV</a>
-</body>
-</html>
+{% endblock %}
 

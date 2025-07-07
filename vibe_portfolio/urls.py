@@ -23,11 +23,13 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 urlpatterns += i18n_patterns(
-path('admin/', admin.site.urls),
     path('about/', include('app_AboutMe.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('blog/', include('app_Blog.urls')),
     path('skills/', include('app_Skills.urls')),
     path("education", include('app_Education.urls')),
     path('work/', include('app_Work.urls')),
