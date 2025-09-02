@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.utils import translation
 from .models import AboutMe
 
-def about_me(request):
+def index(request):
     about_me_info = AboutMe.objects.first()  # Assuming you have only one "About Me" entry
 
     # Detect the user's language

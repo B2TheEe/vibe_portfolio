@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     "app_Education",
     "app_Work",
     "app_Blog",
-    "app_Home",
 ]
 
 MIDDLEWARE = [

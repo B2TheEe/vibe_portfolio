@@ -1,4 +1,5 @@
 <!-- templates/header.html -->
+{% load i18n %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -12,8 +13,21 @@
     <header>
         <nav>
             <ul>
-
-                <!-- Voeg hier andere navigatielinks toe -->
+                <li>
+                    <a href="{% url 'app_AboutMe:index' %}">{% trans 'About Me' noop%}</a>
+                </li>
+                <li>
+                    <a href="{% url 'app_Education:education' %}">{% trans 'Education' noop%}</a>
+                </li>
+                <li>
+                    <a href="{% url 'app_Work:work_experience' %}">{% trans 'Work' noop%}</a>
+                </li>
+                <li>
+                    <a href="{% url 'app_Blog:blog_post_list' %}">{% trans 'Blog' noop%} </a>
+                </li>
+                <li>
+                    <a href="{% url 'app_Skills:skills' %}">{% trans 'Skills' noop%} </a>
+                </li>
             </ul>
            <form method="post" action="{% url 'set_language' %}">
     {% csrf_token %}
