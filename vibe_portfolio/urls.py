@@ -27,6 +27,7 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
+    path('',include('app_Home.urls')),
     path('about/', include('app_AboutMe.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('blog/', include('app_Blog.urls')),
