@@ -1,33 +1,40 @@
 {% extends "app_All/base.html" %}
  {% block content %}
-    <h1>Skills</h1>
-    {% for category in categories %}
-    <div>
-        <h2>{{ category.name }}</h2>
-        <ul>
-            {% for skill in category.skills %}
-            <li>
-                {% if skill.icon %}
-                <img src="{{ skill.icon }}" alt="{{ skill.name }}" width="50" height="50">
-                {% endif %}
-                <h3>{{ skill.name }}</h3>
-                <p>{{ skill.description }}</p>
-                <p>
-                    Level:
-                    <span class="stars">
-                    {% for star in "12345" %}
-                         {% if forloop.counter <= skill.level %}
-                             ★
-                        {% else %}
-                            ☆
-                        {% endif %}
-                    {% endfor %}
-                    </span>
 
-                </p>
-            </li>
+<div class="container py-5">
+    <h1 class="text-center mb-5"> My Skills </h1>
+    {% for category in categories %}
+    <div class="mb-5">
+        <h2>{{ category.name }}</h2>
+        <div class="row">
+            {% for skill in category.skills %}
+            <div class=" col-xl-6 col-l-6 col-md-6 col-lg-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body d-flex align-items-center">
+                            <img src="{{ skill.icon }}" alt="{{ skill.name }}" width="50" height="50">
+                        <div>
+                            <div>
+                                <h5 class="card-title mb-0">{{ skill.name }}</h5>
+                                 <p>{{ skill.description }}</p>
+                            <p>
+                                Level:
+                                 <span class="stars">
+                                         {% for star in "12345" %}
+                                            {% if forloop.counter <= skill.level %}
+                                                 ★
+                                            {% else %}
+                                                ☆
+                                            {% endif %}
+                                         {% endfor %}
+                                     </span>
+
+                              </p>
+                            </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-        </ul>
     </div>
     {% endfor %}
 {% endblock %}
