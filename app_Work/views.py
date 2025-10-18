@@ -19,4 +19,4 @@ def work_experience(request):
         } for experience in experiences]
     }
 
-    return render(request, 'app_Work/work_experience.html', context)
+    return render(request, 'app_Work/work.html', context)

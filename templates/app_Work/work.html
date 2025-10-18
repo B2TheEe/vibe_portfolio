@@ -1,0 +1,42 @@
+{% extends "app_All/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Work Experience' %}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">{% trans 'Work Experience' %}</h1>
+
+    <!-- Work Experience Card -->
+    {% for experience in experiences %}
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card mb-4">
+                <div class="row g-0">
+                    <div class="col-md-3 d-flex align-items-center justify-content-center p-3 bg-light">
+                        <img src="{{ experience.logo }}" alt="{{ experience.company }}" wclass="img-fluid" alt="Stagiair Logo" style="max-height: 100px;">
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ experience.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ experience.company }}</h6>
+                            <p class="card-text">
+                                {{ experience.description }}
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">  {{ experience.start_date }} -
+                {% if experience.is_current %}
+                    Present
+                {% else %}
+                    {{ experience.end_date }}
+                {% endif %}</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
