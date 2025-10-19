@@ -39,6 +39,10 @@
                 <li class="nav-item">
                     <a  class="nav-link" href="{% url 'app_Blog:blog_post_list' %}">{% trans 'Blog' noop%} </a>
                 </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'app_Portfolio:portfolio' %}">{% trans 'Portfolio' noop %}</a>
+                </li>
+
                 </ul>
                 <!-- Language Selector -->
                 <form class="d-flex" method="post" action="{% url 'set_language' %}">

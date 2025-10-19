@@ -1,0 +1,30 @@
+{% extends 'app_All/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans 'Portfolio' %}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">{% trans 'Portfolio' %}</h1>
+
+    <div class="row">
+        {% for project in projects %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <img src="{{ project.image_url }}" class="card-img-top" alt="{{ project.title }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ project.title }}</h5>
+                    <p class="card-text">{{ project.description }}</p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{{ project.github_url }}" class="btn btn-primary" target="_blank">
+                        <i class="bi bi-github me-2"></i>{% trans 'View on GitHub' %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

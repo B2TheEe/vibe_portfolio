@@ -33,6 +33,8 @@ urlpatterns += i18n_patterns(
     path('skills/', include('app_Skills.urls')),
     path("education", include('app_Education.urls')),
     path('work/', include('app_Work.urls')),
+    path('portfolio/', include('app_Portfolio.urls')),
+
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
