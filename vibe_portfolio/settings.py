@@ -124,6 +124,8 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
 
+TRANSLATABLE_MODEL_MODULES = ["app_AboutMe.models", "app_Blog.models", "app_Education.models", "app_Skills.models", "app_Work.models"]
+
 TIME_ZONE = "UTC"
 
 USE_I18N = True
