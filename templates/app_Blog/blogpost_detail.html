@@ -1,6 +1,29 @@
 {% extends "app_All/base.html" %}
- {% block content %}
-    <h1>{{ post.title }}</h1>
-    <p>{{ post.published_date }}</p>
-    <div>{{ post.content|safe }}</div>
+{% load i18n %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="py-2">
+    <div class="article-body">
+
+        {% if post.main_image %}
+        <img src="{{ post.main_image.url }}"
+             class="img-fluid rounded mb-4 w-100"
+             style="max-height:380px; object-fit:cover"
+             alt="{{ post.title }}">
+        {% endif %}
+
+        <div class="blog-date mb-1">{{ post.created_at|date:"d F Y" }}</div>
+        <h1 class="mb-4">{{ post.title }}</h1>
+
+        <div>{{ post.content|safe }}</div>
+
+        <div class="mt-5 pt-3 border-top">
+            <a href="{% url 'app_Blog:blog_post_list' %}" class="btn btn-primary">
+                <i class="bi bi-arrow-left me-2"></i>{% trans 'Terug naar Blog' %}
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}

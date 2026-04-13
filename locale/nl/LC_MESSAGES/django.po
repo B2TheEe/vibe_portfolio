@@ -1,0 +1,95 @@
+# Dutch translations for vibe_portfolio
+# Copyright (C) 2025 Bente Schopman
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# Navbar
+msgid "My Portfolio"
+msgstr "Mijn Portfolio"
+
+msgid "About Me"
+msgstr "Over mij"
+
+msgid "Education"
+msgstr "Opleiding"
+
+msgid "Work"
+msgstr "Werk"
+
+msgid "Skills"
+msgstr "Vaardigheden"
+
+msgid "Blog"
+msgstr "Blog"
+
+msgid "Portfolio"
+msgstr "Portfolio"
+
+# About Me pagina
+msgid "Download CV"
+msgstr "CV downloaden"
+
+msgid "About me"
+msgstr "Over mij"
+
+# Gemeenschappelijk
+msgid "Huidig"
+msgstr "Huidig"
+
+msgid "Work Experience"
+msgstr "Werkervaring"
+
+msgid "Foto van Bente"
+msgstr "Foto van Bente"
+
+# Blog
+msgid "Back to Blog"
+msgstr "Terug naar Blog"
+
+msgid "Terug naar Blog"
+msgstr "Terug naar Blog"
+
+msgid "Nog geen blogposts."
+msgstr "Nog geen blogposts."
+
+msgid "Blogpost bewerken"
+msgstr "Blogpost bewerken"
+
+msgid "Opslaan"
+msgstr "Opslaan"
+
+msgid "Annuleren"
+msgstr "Annuleren"
+
+# Portfolio
+msgid "View on GitHub"
+msgstr "Bekijk op GitHub"
+
+msgid "Nog geen projecten."
+msgstr "Nog geen projecten."
+
+# Education
+msgid "Propedeuse"
+msgstr "Propedeuse"
+
+msgid "Diploma"
+msgstr "Diploma"
+
+msgid "Geen opleidingen gevonden."
+msgstr "Geen opleidingen gevonden."
+
+# Work
+msgid "Geen werkervaring gevonden."
+msgstr "Geen werkervaring gevonden."
+
+# Skills
+msgid "Geen skills gevonden."
+msgstr "Geen vaardigheden gevonden."
+
+# Bente Schopman
+msgid "Bente Schopman"
+msgstr "Bente Schopman"

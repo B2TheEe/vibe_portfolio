@@ -1,9 +1,39 @@
 {% extends "app_All/base.html" %}
- {% block content %}
-    <h1>{{ title }}</h1>
-    <p>{{ description }}</p>
-    <p>{{ bio }}</p>
-    <img src="{{ photo.url }}" width="250px" height="200px" alt="Photo of Me">
-    <a href="{{ cv.url }}">Download CV</a>
-{% endblock %}
+{% load i18n %}
+{% load static %}
 
+{% block title %}{% trans 'About Me' %} — Bente Schopman{% endblock %}
+
+{% block content %}
+<div class="section-wrapper py-2">
+
+    <!-- Hero -->
+    <div class="hero-section">
+        <div class="row align-items-center g-4">
+            <div class="col-12 col-md-4 order-md-2 text-center">
+                <img src="{{ photo.url }}" alt="{% trans 'Foto van Bente' %}" class="hero-photo">
+            </div>
+            <div class="col-12 col-md-8 order-md-1">
+                <h1>{{ title }}</h1>
+                <p class="lead">{{ description }}</p>
+                {% if cv %}
+                <a href="{{ cv.url }}" class="btn btn-accent mt-2" download>
+                    <i class="bi bi-file-earmark-person me-2"></i>{% trans 'Download CV' %}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="card bio-card mt-2">
+        <div class="card-body">
+            <h2 class="fw-bold mb-3" style="font-size:1.15rem; color:var(--py-blue-dark)">
+                <i class="bi bi-person-lines-fill me-2" style="color:var(--py-yellow)"></i>{% trans 'Over mij' %}
+            </h2>
+            <p style="white-space: pre-line; margin-bottom:0">{{ bio }}</p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

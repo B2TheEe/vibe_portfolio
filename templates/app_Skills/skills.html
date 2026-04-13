@@ -1,40 +1,42 @@
 {% extends "app_All/base.html" %}
- {% block content %}
+{% load i18n %}
 
-<div class="container py-5">
-    <h1 class="text-center mb-5"> My Skills </h1>
+{% block title %}{% trans 'Skills' %}{% endblock %}
+
+{% block content %}
+<div class="py-2">
+    <h1 class="page-title">{% trans 'Skills' %}</h1>
+
     {% for category in categories %}
     <div class="mb-5">
-        <h2>{{ category.name }}</h2>
-        <div class="row">
+        <h2 class="category-header">{{ category.name }}</h2>
+        <div class="row g-3">
             {% for skill in category.skills %}
-            <div class=" col-xl-6 col-l-6 col-md-6 col-lg-4 mb-3">
-                <div class="card h-100">
-                    <div class="card-body d-flex align-items-center">
-                            <img src="{{ skill.icon }}" alt="{{ skill.name }}" width="50" height="50">
-                        <div>
-                            <div>
-                                <h5 class="card-title mb-0">{{ skill.name }}</h5>
-                                 <p>{{ skill.description }}</p>
-                            <p>
-                                Level:
-                                 <span class="stars">
-                                         {% for star in "12345" %}
-                                            {% if forloop.counter <= skill.level %}
-                                                 ★
-                                            {% else %}
-                                                ☆
-                                            {% endif %}
-                                         {% endfor %}
-                                     </span>
-
-                              </p>
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card h-100 skill-card">
+                    <div class="card-body">
+                        <img src="{{ skill.icon }}" alt="{{ skill.name }}" class="skill-icon">
+                        <div class="flex-grow-1">
+                            <div class="skill-name">{{ skill.name }}</div>
+                            <div class="skill-desc">{{ skill.description }}</div>
+                            <div class="stars">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= skill.level %}
+                                        <span class="star-filled">★</span>
+                                    {% else %}
+                                        <span class="star-empty">★</span>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
-                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             {% endfor %}
+        </div>
     </div>
+    {% empty %}
+    <p class="text-muted">{% trans 'Geen skills gevonden.' %}</p>
     {% endfor %}
+</div>
 {% endblock %}

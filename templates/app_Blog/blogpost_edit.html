@@ -1,15 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Blog Post</title>
-</head>
-<body>
-    <h1>Edit Blog Post</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
-</body>
-</html>
+{% extends "app_All/base.html" %}
+{% load i18n %}
 
+{% block title %}{% trans 'Blogpost bewerken' %}{% endblock %}
+
+{% block content %}
+<div class="section-wrapper py-2">
+    <h1 class="page-title">{% trans 'Blogpost bewerken' %}</h1>
+
+    <div class="card mt-2">
+        <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-2"></i>{% trans 'Opslaan' %}
+                    </button>
+                    <a href="{% url 'app_Blog:blog_post_list' %}" class="btn btn-outline-secondary">
+                        {% trans 'Annuleren' %}
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,44 +4,54 @@
 {% block title %}{% trans 'Education' %}{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <h1 class="text-center mb-5">{% trans 'Education' %}</h1>
+<div class="section-wrapper py-2">
+    <h1 class="page-title">{% trans 'Education' %}</h1>
 
-    <!-- Education Card -->
-    {% for education in educations %}
-    <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-8">
-            <div class="card mb-4">
-                <div class="row g-0">
-                    <div class="col-md-3 d-flex align-items-center justify-content-center p-3">
-                        <img src="{{ education.logo.url }}" alt="{{ education.institution }}" class="img-fluid" style="max-height: 100px;">
-                    </div>
-                    <div class="col-md-9">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ education.title }} </h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ education.institution }}</h6>
-                            <p class="card-text">
-                               {{ education.description }}
-                            <p class="card-text">
-                                <small class="text-muted">{{ education.start_date }} -
-                                    {% if education.is_current %}
-                                        Present
-                                    {% else %}
-                                        {{ education.end_date }}
-                                    {% endif %}</small>
-                                 {% if education.propedeuse_date %}
-                                 <p>Propedeuse Date: {{ education.propedeuse_date }}</p>
-                            {% endif %}
-                             {% if education.diploma_date %}
-                                <p>Diploma Date: {{ education.diploma_date }}</p>
-                            {% endif %}
-                            </p>
+    <div class="timeline mt-2">
+        {% for education in educations %}
+        <div class="timeline-item">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-start gap-3 flex-wrap flex-sm-nowrap">
+
+                        {% if education.logo %}
+                        <img src="{{ education.logo.url }}" alt="{{ education.institution }}" class="timeline-logo">
+                        {% endif %}
+
+                        <div class="flex-grow-1">
+                            <div class="timeline-date">
+                                {{ education.start_date|date:"Y" }} –
+                                {% if education.is_current %}
+                                    <span class="timeline-badge badge-current">{% trans 'Huidig' %}</span>
+                                {% else %}
+                                    {{ education.end_date|date:"Y" }}
+                                {% endif %}
+                            </div>
+
+                            <h5 class="timeline-title">{{ education.title }}</h5>
+                            <p class="timeline-subtitle">{{ education.institution }}</p>
+                            <p class="mb-2" style="font-size:.92rem">{{ education.description }}</p>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if education.propedeuse_date %}
+                                <span class="timeline-badge">
+                                    <i class="bi bi-award me-1"></i>{% trans 'Propedeuse' %}: {{ education.propedeuse_date|date:"M Y" }}
+                                </span>
+                                {% endif %}
+                                {% if education.diploma_date %}
+                                <span class="timeline-badge">
+                                    <i class="bi bi-mortarboard me-1"></i>{% trans 'Diploma' %}: {{ education.diploma_date|date:"M Y" }}
+                                </span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        {% empty %}
+        <p class="text-muted">{% trans 'Geen opleidingen gevonden.' %}</p>
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 {% endblock %}
