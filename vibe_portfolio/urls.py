@@ -28,7 +28,7 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('', include('app_AboutMe.urls')),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('ckeditor5/', include('django_ckeditor_5.urls')),
     path('blog/', include('app_Blog.urls')),
     path('skills/', include('app_Skills.urls')),
     path("education", include('app_Education.urls')),

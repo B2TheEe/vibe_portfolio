@@ -1,21 +1,33 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from .models import BlogPost
+from django.core.paginator import Paginator
+from django.utils import translation
+from django.conf import settings
+from .models import BlogPost, Category
 from .forms import BlogPostForm
-from django.shortcuts import render
-from django.utils import translation
-from django.conf import settings
-from .models import BlogPost
 
-from django.conf import settings
-
-from django.utils import translation
+POSTS_PER_PAGE = 6
 
 def blog_post_list(request):
+    lang = request.LANGUAGE_CODE
+    category_id = request.GET.get('category')
+    posts = BlogPost.objects.all().order_by('-created_at')
 
-    # Haal de blogposts op en render de template
-    posts = BlogPost.objects.all()
-    return render(request, 'app_Blog/blogpost_list.html', {'posts': posts})
+    if category_id:
+        posts = posts.filter(category_id=category_id)
+
+    paginator = Paginator(posts, POSTS_PER_PAGE)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    categories = Category.objects.all()
+
+    return render(request, 'app_Blog/blogpost_list.html', {
+        'page_obj': page_obj,
+        'categories': categories,
+        'selected_category': category_id,
+        'lang': lang,
+    })
 
 
 def blog_post_detail(request, pk):

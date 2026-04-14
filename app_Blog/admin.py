@@ -1,18 +1,9 @@
 from django.contrib import admin
-from .models import BlogPost , Category
-from ckeditor.widgets import CKEditorWidget
-from django import forms
+from .models import BlogPost, Category
 
-class BlogPostAdminForm(forms.ModelForm):
-    content_nl = forms.CharField(widget=CKEditorWidget())
-    content_en = forms.CharField(widget=CKEditorWidget())
-
-    class Meta:
-        model = BlogPost
-        fields = '__all__'
-
+@admin.register(BlogPost)
 class BlogPostAdmin(admin.ModelAdmin):
-    form = BlogPostAdminForm
+    list_display = ('title', 'category', 'created_at')
+    list_filter = ('category',)
 
-admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(Category)
