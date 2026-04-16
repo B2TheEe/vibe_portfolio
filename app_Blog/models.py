@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
+
 
 class Category(models.Model):
     name_nl = models.CharField(max_length=100, verbose_name="Naam in Nederlands")
@@ -15,8 +17,17 @@ class BlogPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     main_image = models.ImageField(upload_to='blog_main_images/', null=True, blank=True)
-    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL, related_name='posts')
+    category = models.ForeignKey(
+        Category, null=True, blank=True, on_delete=models.SET_NULL, related_name='posts'
+    )
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='blog_posts',
+        verbose_name='Author',
+    )
 
     def __str__(self):
         return self.title
-

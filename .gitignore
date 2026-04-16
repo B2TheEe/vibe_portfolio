@@ -1,2 +1,24 @@
- .idea/
- venv/
+# IDE
+.idea/
+.vscode/
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Django
+db.sqlite3
+staticfiles/
+media/
+
+# Environment variables — NEVER commit this file
+.env
+
+# Logs
+logs/*.log
+
+# OS
+.DS_Store
+Thumbs.db

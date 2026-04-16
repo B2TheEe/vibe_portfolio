@@ -17,7 +17,7 @@
         <div class="blog-date mb-1">{{ post.created_at|date:"d F Y" }}</div>
         <h1 class="mb-4">{{ post.title }}</h1>
 
-        <div>{{ post.content|safe }}</div>
+        <div>{{ content }}</div>
 
         <div class="mt-5 pt-3 border-top">
             <a href="{% url 'app_Blog:blog_post_list' %}" class="btn btn-primary">

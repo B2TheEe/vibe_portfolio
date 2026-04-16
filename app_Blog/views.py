@@ -1,20 +1,53 @@
+import bleach
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.utils.html import mark_safe
 from django.core.paginator import Paginator
-from django.utils import translation
-from django.conf import settings
 from .models import BlogPost, Category
 from .forms import BlogPostForm
 
 POSTS_PER_PAGE = 6
 
+# Tags en attributen die na sanitisatie van CKEditor-inhoud zijn toegestaan
+_ALLOWED_TAGS = [
+    'p', 'br', 'strong', 'em', 'u', 's',
+    'a', 'ul', 'ol', 'li',
+    'blockquote', 'code', 'pre',
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'table', 'thead', 'tbody', 'tr', 'th', 'td',
+]
+_ALLOWED_ATTRIBUTES = {
+    'a': ['href', 'title', 'rel'],
+    'td': ['colspan', 'rowspan'],
+    'th': ['colspan', 'rowspan'],
+}
+
+
+def _sanitize_html(raw_html):
+    """Verwijder onveilige HTML-tags en -attributen met bleach."""
+    cleaned = bleach.clean(
+        raw_html,
+        tags=_ALLOWED_TAGS,
+        attributes=_ALLOWED_ATTRIBUTES,
+        strip=True,
+    )
+    return mark_safe(cleaned)
+
+
 def blog_post_list(request):
     lang = request.LANGUAGE_CODE
-    category_id = request.GET.get('category')
     posts = BlogPost.objects.all().order_by('-created_at')
 
-    if category_id:
-        posts = posts.filter(category_id=category_id)
+    # Valideer category_id als integer om type-fouten te voorkomen
+    category_id = None
+    raw_category = request.GET.get('category', '').strip()
+    if raw_category:
+        try:
+            category_id = int(raw_category)
+            posts = posts.filter(category_id=category_id)
+        except ValueError:
+            pass  # Ongeldige waarde genegeerd
 
     paginator = Paginator(posts, POSTS_PER_PAGE)
     page_number = request.GET.get('page')
@@ -31,19 +64,18 @@ def blog_post_list(request):
 
 
 def blog_post_detail(request, pk):
-    # Stel de taalvoorkeur van de gebruiker in
-    user_language = request.session.get(translation.LANGUAGE_SESSION_KEY, 'en')
-    translation.activate(user_language)
-    request.session[translation.LANGUAGE_SESSION_KEY] = user_language
-
-    # Haal de blogpost op en render de template
     post = get_object_or_404(BlogPost, pk=pk)
-    return render(request, 'app_Blog/blogpost_detail.html', {'post': post})
+    sanitized_content = _sanitize_html(post.content)
+    return render(request, 'app_Blog/blogpost_detail.html', {
+        'post': post,
+        'content': sanitized_content,
+    })
 
 
+@login_required
 def blog_post_new(request):
     if request.method == "POST":
-        form = BlogPostForm(request.POST)
+        form = BlogPostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
@@ -54,10 +86,12 @@ def blog_post_new(request):
         form = BlogPostForm()
     return render(request, 'app_Blog/blogpost_edit.html', {'form': form})
 
+
+@login_required
 def blog_post_edit(request, pk):
     post = get_object_or_404(BlogPost, pk=pk)
     if request.method == "POST":
-        form = BlogPostForm(request.POST, instance=post)
+        form = BlogPostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
