@@ -286,8 +286,7 @@ footer a:hover {
 
 .skill-card .card-body {
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  flex-direction: column;
   padding: 1.25rem;
 }
 
@@ -313,9 +312,12 @@ footer a:hover {
   line-height: 1.45;
 }
 
-.stars { font-size: 1rem; line-height: 1; }
-.stars .star-filled { color: var(--py-yellow); }
-.stars .star-empty  { color: #CBD5E0; }
+.skill-chevron {
+  transition: transform 0.2s ease;
+}
+[aria-expanded="true"] .skill-chevron {
+  transform: rotate(180deg);
+}
 
 /* ─── Blog ──────────────────────────────────────── */
 .blog-card-img {
