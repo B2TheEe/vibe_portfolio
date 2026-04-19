@@ -1,4 +1,6 @@
 from django.contrib import admin
 from .models import GitHubProject
-# Register your models here.
-admin.site.register(GitHubProject)
+
+@admin.register(GitHubProject)
+class GitHubProjectAdmin(admin.ModelAdmin):
+    filter_horizontal = ('skills',)

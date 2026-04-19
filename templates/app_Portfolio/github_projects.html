@@ -25,6 +25,13 @@
                     <p class="card-text flex-grow-1" style="font-size:.9rem; color:var(--py-muted)">
                         {{ project.description }}
                     </p>
+                    {% if project.skill_names %}
+                    <div class="d-flex flex-wrap gap-1 mt-2">
+                        {% for skill in project.skill_names %}
+                        <span class="badge" style="background:var(--py-blue-light); color:var(--py-blue-mid); font-size:.75rem; font-weight:500">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="card-footer bg-transparent border-0 pb-3 px-3">
                     <a href="{{ project.github_url }}" class="btn btn-primary w-100" target="_blank" rel="noopener noreferrer">

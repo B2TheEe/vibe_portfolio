@@ -7,6 +7,7 @@ class GitHubProject(models.Model):
     description_en = models.TextField()
     github_url = models.URLField()
     image = models.ImageField(upload_to='projects/')
+    skills = models.ManyToManyField('app_Skills.Skill', blank=True, related_name='projects', verbose_name="Skills")
 
     def __str__(self):
         return self.title_nl
