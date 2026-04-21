@@ -87,6 +87,9 @@ msgid "Geen werkervaring gevonden."
 msgstr "Geen werkervaring gevonden."
 
 # Skills
+msgid "Illustration"
+msgstr "Toelichting"
+
 msgid "Geen skills gevonden."
 msgstr "Geen vaardigheden gevonden."
 
