@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class AboutMe(models.Model):
     title_nl = models.CharField(max_length=100, verbose_name="Title in Dutch")
@@ -11,5 +12,17 @@ class AboutMe(models.Model):
     cv_nl = models.FileField(upload_to='media/', verbose_name="CV in Dutch",  null=True, blank=True)
     cv_en = models.FileField(upload_to='media/', verbose_name="CV in English", null=True, blank=True)
 
+    def clean(self):
+        if not self.pk and AboutMe.objects.exists():
+            raise ValidationError("Er kan maar één About Me-item bestaan.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.title_en
+
+    class Meta:
+        verbose_name = "About Me"
+        verbose_name_plural = "About Me"
