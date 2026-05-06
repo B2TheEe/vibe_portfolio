@@ -9,49 +9,57 @@
     <h1 class="page-title">{% trans 'Portfolio' %}</h1>
 
     <!-- Filters -->
+    {% if language_skills or other_skills %}
     <div class="mb-4">
-        {% if language_skills %}
-        <div class="mb-3">
-            <p class="fw-semibold mb-2" style="color:var(--py-blue-mid); font-size:.9rem; text-transform:uppercase; letter-spacing:.05em">
-                {% trans 'Programmeertaal' %}
-            </p>
-            <div class="d-flex flex-wrap gap-2" id="lang-filters">
-                {% for skill in language_skills %}
-                <button
-                    type="button"
-                    class="filter-btn"
-                    data-skill-id="{{ skill.id }}"
-                    data-group="lang"
-                >{{ skill.name }}</button>
-                {% endfor %}
-            </div>
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <button type="button" id="toggle-filters" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-funnel me-1"></i>{% trans 'Filters' %}
+                <i class="bi bi-chevron-down ms-1" id="filter-chevron"></i>
+            </button>
+            <button type="button" id="clear-filters" class="btn btn-sm btn-outline-secondary" style="display:none">
+                <i class="bi bi-x-lg me-1"></i>{% trans 'Filters wissen' %}
+            </button>
         </div>
-        {% endif %}
 
-        {% if other_skills %}
-        <div class="mb-2">
-            <p class="fw-semibold mb-2" style="color:var(--py-blue-mid); font-size:.9rem; text-transform:uppercase; letter-spacing:.05em">
-                {% trans 'Skills' %}
-            </p>
-            <div class="d-flex flex-wrap gap-2" id="skill-filters">
-                {% for skill in other_skills %}
-                <button
-                    type="button"
-                    class="filter-btn"
-                    data-skill-id="{{ skill.id }}"
-                    data-group="skill"
-                >{{ skill.name }}</button>
-                {% endfor %}
+        <div id="filter-panel" style="display:none">
+            {% if language_skills %}
+            <div class="mb-3">
+                <p class="fw-semibold mb-2" style="color:var(--py-blue-mid); font-size:.9rem; text-transform:uppercase; letter-spacing:.05em">
+                    {% trans 'Programmeertaal' %}
+                </p>
+                <div class="d-flex flex-wrap gap-2" id="lang-filters">
+                    {% for skill in language_skills %}
+                    <button
+                        type="button"
+                        class="filter-btn"
+                        data-skill-id="{{ skill.id }}"
+                        data-group="lang"
+                    >{{ skill.name }}</button>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-        {% endif %}
+            {% endif %}
 
-        {% if language_skills or other_skills %}
-        <button type="button" id="clear-filters" class="btn btn-sm btn-outline-secondary mt-2" style="display:none">
-            <i class="bi bi-x-lg me-1"></i>{% trans 'Filters wissen' %}
-        </button>
-        {% endif %}
+            {% if other_skills %}
+            <div class="mb-2">
+                <p class="fw-semibold mb-2" style="color:var(--py-blue-mid); font-size:.9rem; text-transform:uppercase; letter-spacing:.05em">
+                    {% trans 'Skills' %}
+                </p>
+                <div class="d-flex flex-wrap gap-2" id="skill-filters">
+                    {% for skill in other_skills %}
+                    <button
+                        type="button"
+                        class="filter-btn"
+                        data-skill-id="{{ skill.id }}"
+                        data-group="skill"
+                    >{{ skill.name }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
     </div>
+    {% endif %}
 
     <!-- Project grid -->
     <div class="row g-4" id="project-grid">
@@ -173,6 +181,17 @@
             selectedSkills.clear();
             document.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active'));
             applyFilters();
+        });
+    }
+
+    const toggleBtn = document.getElementById('toggle-filters');
+    const filterPanel = document.getElementById('filter-panel');
+    const chevron = document.getElementById('filter-chevron');
+    if (toggleBtn && filterPanel) {
+        toggleBtn.addEventListener('click', function () {
+            const open = filterPanel.style.display === 'none';
+            filterPanel.style.display = open ? '' : 'none';
+            chevron.className = open ? 'bi bi-chevron-up ms-1' : 'bi bi-chevron-down ms-1';
         });
     }
 })();
