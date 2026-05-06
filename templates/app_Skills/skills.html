@@ -7,8 +7,38 @@
 <div class="py-2">
     <h1 class="page-title">{% trans 'Skills' %}</h1>
 
+    <!-- Filters -->
+    {% if categories %}
+    <div class="mb-4">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <button type="button" id="toggle-filters" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-funnel me-1"></i>{% trans 'Filters' %}
+                <i class="bi bi-chevron-down ms-1" id="filter-chevron"></i>
+            </button>
+            <button type="button" id="clear-filters" class="btn btn-sm btn-outline-secondary" style="display:none">
+                <i class="bi bi-x-lg me-1"></i>{% trans 'Filters wissen' %}
+            </button>
+        </div>
+
+        <div id="filter-panel" style="display:none">
+            <p class="fw-semibold mb-2" style="color:var(--py-blue-mid); font-size:.9rem; text-transform:uppercase; letter-spacing:.05em">
+                {% trans 'Categorie' %}
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                {% for category in categories %}
+                <button
+                    type="button"
+                    class="filter-btn"
+                    data-category-id="{{ category.id }}"
+                >{{ category.name }}</button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     {% for category in categories %}
-    <div class="mb-5">
+    <div class="mb-5 category-section" data-category-id="{{ category.id }}">
         <h2 class="category-header">{{ category.name }}</h2>
         <div class="row g-3">
             {% for skill in category.skills %}
@@ -46,5 +76,86 @@
     {% empty %}
     <p class="text-muted">{% trans 'Geen skills gevonden.' %}</p>
     {% endfor %}
+
+    <div id="no-results" style="display:none">
+        <p class="text-muted">{% trans 'Geen categorieën gevonden voor de geselecteerde filters.' %}</p>
+    </div>
 </div>
+
+<style>
+.filter-btn {
+    padding: .3rem .85rem;
+    border-radius: 2rem;
+    border: 1.5px solid var(--py-blue-mid);
+    background: transparent;
+    color: var(--py-blue-mid);
+    font-size: .82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+}
+.filter-btn:hover {
+    background: var(--py-blue-light);
+}
+.filter-btn.active {
+    background: var(--py-blue-mid);
+    color: #fff;
+}
+</style>
+
+<script>
+(function () {
+    const selected = new Set();
+
+    function applyFilters() {
+        const sections = document.querySelectorAll('.category-section');
+        let visible = 0;
+
+        sections.forEach(section => {
+            const show = selected.size === 0 || selected.has(Number(section.dataset.categoryId));
+            section.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        document.getElementById('no-results').style.display = visible === 0 ? '' : 'none';
+
+        const clearBtn = document.getElementById('clear-filters');
+        if (clearBtn) clearBtn.style.display = selected.size > 0 ? '' : 'none';
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = Number(this.dataset.categoryId);
+            if (selected.has(id)) {
+                selected.delete(id);
+                this.classList.remove('active');
+            } else {
+                selected.add(id);
+                this.classList.add('active');
+            }
+            applyFilters();
+        });
+    });
+
+    const clearBtn = document.getElementById('clear-filters');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            selected.clear();
+            document.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active'));
+            applyFilters();
+        });
+    }
+
+    const toggleBtn = document.getElementById('toggle-filters');
+    const filterPanel = document.getElementById('filter-panel');
+    const chevron = document.getElementById('filter-chevron');
+    if (toggleBtn && filterPanel) {
+        toggleBtn.addEventListener('click', function () {
+            const open = filterPanel.style.display === 'none';
+            filterPanel.style.display = open ? '' : 'none';
+            chevron.className = open ? 'bi bi-chevron-up ms-1' : 'bi bi-chevron-down ms-1';
+        });
+    }
+})();
+</script>
 {% endblock %}
