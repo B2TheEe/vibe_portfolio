@@ -8,9 +8,55 @@
 <div class="py-2">
     <h1 class="page-title">{% trans 'Portfolio' %}</h1>
 
-    <div class="row g-4">
+    <!-- Filters -->
+    <div class="mb-4">
+        {% if language_skills %}
+        <div class="mb-3">
+            <p class="fw-semibold mb-2" style="color:var(--py-blue-mid); font-size:.9rem; text-transform:uppercase; letter-spacing:.05em">
+                {% trans 'Programmeertaal' %}
+            </p>
+            <div class="d-flex flex-wrap gap-2" id="lang-filters">
+                {% for skill in language_skills %}
+                <button
+                    type="button"
+                    class="filter-btn"
+                    data-skill-id="{{ skill.id }}"
+                    data-group="lang"
+                >{{ skill.name }}</button>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if other_skills %}
+        <div class="mb-2">
+            <p class="fw-semibold mb-2" style="color:var(--py-blue-mid); font-size:.9rem; text-transform:uppercase; letter-spacing:.05em">
+                {% trans 'Skills' %}
+            </p>
+            <div class="d-flex flex-wrap gap-2" id="skill-filters">
+                {% for skill in other_skills %}
+                <button
+                    type="button"
+                    class="filter-btn"
+                    data-skill-id="{{ skill.id }}"
+                    data-group="skill"
+                >{{ skill.name }}</button>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if language_skills or other_skills %}
+        <button type="button" id="clear-filters" class="btn btn-sm btn-outline-secondary mt-2" style="display:none">
+            <i class="bi bi-x-lg me-1"></i>{% trans 'Filters wissen' %}
+        </button>
+        {% endif %}
+    </div>
+
+    <!-- Project grid -->
+    <div class="row g-4" id="project-grid">
         {% for project in projects %}
-        <div class="col-12 col-sm-6 col-lg-4">
+        <div class="col-12 col-sm-6 col-lg-4 project-col" data-skill-ids="{{ project.skill_ids }}">
             <div class="card h-100 project-card">
                 {% if project.image %}
                 <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
@@ -45,6 +91,90 @@
             <p class="text-muted">{% trans 'Nog geen projecten.' %}</p>
         </div>
         {% endfor %}
+
+        <div class="col-12" id="no-results" style="display:none">
+            <p class="text-muted">{% trans 'Geen projecten gevonden voor de geselecteerde filters.' %}</p>
+        </div>
     </div>
 </div>
+
+<style>
+.filter-btn {
+    padding: .3rem .85rem;
+    border-radius: 2rem;
+    border: 1.5px solid var(--py-blue-mid);
+    background: transparent;
+    color: var(--py-blue-mid);
+    font-size: .82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+}
+.filter-btn:hover {
+    background: var(--py-blue-light);
+}
+.filter-btn.active {
+    background: var(--py-blue-mid);
+    color: #fff;
+}
+</style>
+
+<script>
+(function () {
+    const selectedLang = new Set();
+    const selectedSkills = new Set();
+
+    function applyFilters() {
+        const cols = document.querySelectorAll('.project-col');
+        let visible = 0;
+
+        cols.forEach(col => {
+            const ids = col.dataset.skillIds
+                ? col.dataset.skillIds.split(',').map(Number)
+                : [];
+
+            const langOk = selectedLang.size === 0 || ids.some(id => selectedLang.has(id));
+            const skillOk = selectedSkills.size === 0 || ids.some(id => selectedSkills.has(id));
+
+            const show = langOk && skillOk;
+            col.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        document.getElementById('no-results').style.display = visible === 0 ? '' : 'none';
+
+        const clearBtn = document.getElementById('clear-filters');
+        if (clearBtn) {
+            clearBtn.style.display = (selectedLang.size + selectedSkills.size) > 0 ? '' : 'none';
+        }
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = Number(this.dataset.skillId);
+            const group = this.dataset.group;
+            const set = group === 'lang' ? selectedLang : selectedSkills;
+
+            if (set.has(id)) {
+                set.delete(id);
+                this.classList.remove('active');
+            } else {
+                set.add(id);
+                this.classList.add('active');
+            }
+            applyFilters();
+        });
+    });
+
+    const clearBtn = document.getElementById('clear-filters');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            selectedLang.clear();
+            selectedSkills.clear();
+            document.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active'));
+            applyFilters();
+        });
+    }
+})();
+</script>
 {% endblock %}
