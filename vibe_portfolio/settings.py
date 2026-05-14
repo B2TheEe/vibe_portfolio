@@ -61,9 +61,10 @@ INSTALLED_APPS = [
 # ---------------------------------------------------------------------------
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",        # EERSTE: HTTPS, headers
-    "whitenoise.middleware.WhiteNoiseMiddleware",           # Statische bestanden via Gunicorn
-    "vibe_portfolio.middleware.RateLimitMiddleware",        # Rate limiting (na static files)
+    "django.middleware.security.SecurityMiddleware",                  # EERSTE: HTTPS, headers
+    "whitenoise.middleware.WhiteNoiseMiddleware",                     # Statische bestanden via Gunicorn
+    "vibe_portfolio.middleware.PayloadSizeLimitMiddleware",           # Oversized payloads weigeren
+    "vibe_portfolio.middleware.RateLimitMiddleware",                  # Rate limiting (na static files)
     "django.contrib.sessions.middleware.SessionMiddleware",
     'django.middleware.locale.LocaleMiddleware',            # Na sessions, vóór common
     "django.middleware.common.CommonMiddleware",
@@ -124,6 +125,17 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
+
+
+# ---------------------------------------------------------------------------
+# Upload-limieten — beschermt tegen oversized of misvormd POST-verkeer
+# ---------------------------------------------------------------------------
+# Maximale grootte van POST-velddata exclusief bestandsuploads (default 2.5 MB)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024   # 2 MB
+# Grens waarboven bestanden naar schijf worden geschreven in plaats van geheugen
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024   # 2 MB
+# Maximaal aantal POST-velden — voorkomt hash-flooding-aanvallen
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 50
 
 
 # ---------------------------------------------------------------------------

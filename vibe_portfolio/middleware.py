@@ -7,6 +7,34 @@ from django.http import HttpResponse
 
 logger = logging.getLogger('django.security')
 
+_MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB
+
+
+class PayloadSizeLimitMiddleware:
+    """Reject any request whose Content-Length exceeds 10 MB before the body is read."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        content_length = request.META.get('CONTENT_LENGTH')
+        if content_length:
+            try:
+                if int(content_length) > _MAX_UPLOAD_BYTES:
+                    logger.warning(
+                        'Oversized payload rejected | ip=%s path=%s size=%s bytes',
+                        _get_client_ip(request), request.path_info, content_length,
+                    )
+                    return HttpResponse(
+                        'Payload too large. Maximum allowed size is 10 MB.',
+                        status=413,
+                        content_type='text/plain; charset=utf-8',
+                    )
+            except (ValueError, TypeError):
+                pass
+        return self.get_response(request)
+
+
 _AUTH_RE = re.compile(
     r'/(login|logout|password[_-]change|password[_-]reset)',
     re.IGNORECASE,

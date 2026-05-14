@@ -1,3 +1,4 @@
+import re
 import bleach
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
@@ -9,7 +10,6 @@ from .forms import BlogPostForm
 
 POSTS_PER_PAGE = 6
 
-# Tags en attributen die na sanitisatie van CKEditor-inhoud zijn toegestaan
 _ALLOWED_TAGS = [
     'p', 'br', 'strong', 'em', 'u', 's',
     'a', 'ul', 'ol', 'li',
@@ -17,20 +17,33 @@ _ALLOWED_TAGS = [
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
     'table', 'thead', 'tbody', 'tr', 'th', 'td',
 ]
-_ALLOWED_ATTRIBUTES = {
-    'a': ['href', 'title', 'rel'],
-    'td': ['colspan', 'rowspan'],
-    'th': ['colspan', 'rowspan'],
-}
+
+_DANGEROUS_SCHEME_RE = re.compile(
+    r'^\s*(javascript|data|vbscript)\s*:', re.IGNORECASE
+)
+
+
+def _allow_safe_attrs(tag, name, value):
+    """Allow only safe attributes; block dangerous URI schemes in href."""
+    if tag == 'a':
+        if name == 'href' and _DANGEROUS_SCHEME_RE.match(value):
+            return False
+        return name in ('href', 'title', 'rel')
+    if tag in ('td', 'th'):
+        return name in ('colspan', 'rowspan')
+    return False
+
+
+_ALLOWED_ATTRIBUTES = _allow_safe_attrs
 
 
 def _sanitize_html(raw_html):
-    """Verwijder onveilige HTML-tags en -attributen met bleach."""
     cleaned = bleach.clean(
         raw_html,
         tags=_ALLOWED_TAGS,
         attributes=_ALLOWED_ATTRIBUTES,
         strip=True,
+        strip_comments=True,
     )
     return mark_safe(cleaned)
 
