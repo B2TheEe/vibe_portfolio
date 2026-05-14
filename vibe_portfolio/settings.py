@@ -63,6 +63,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",        # EERSTE: HTTPS, headers
     "whitenoise.middleware.WhiteNoiseMiddleware",           # Statische bestanden via Gunicorn
+    "vibe_portfolio.middleware.RateLimitMiddleware",        # Rate limiting (na static files)
     "django.contrib.sessions.middleware.SessionMiddleware",
     'django.middleware.locale.LocaleMiddleware',            # Na sessions, vóór common
     "django.middleware.common.CommonMiddleware",
@@ -110,6 +111,19 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+
+
+# ---------------------------------------------------------------------------
+# Cache — gebruikt door rate-limiting middleware
+# ---------------------------------------------------------------------------
+# Standaard: LocMemCache (in-process). Bij meerdere Gunicorn workers kan elke
+# worker een eigen teller bijhouden. Gebruik voor productie een gedeelde cache
+# (bijv. Redis) via de CACHE_URL omgevingsvariabele en django-redis.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 
 # ---------------------------------------------------------------------------
