@@ -1,0 +1,133 @@
+{% extends "app_All/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Search" %} — {{ query }}{% endblock %}
+
+{% block content %}
+<div class="py-2">
+    <h1 class="page-title">{% trans "Search" %}</h1>
+
+    <form method="get" class="mb-4" role="search">
+        <div class="input-group">
+            <input type="search"
+                   class="form-control"
+                   name="q"
+                   value="{{ query }}"
+                   maxlength="100"
+                   placeholder="{% trans 'Search blog, portfolio, skills…' %}"
+                   aria-label="{% trans 'Search' %}"
+                   autofocus>
+            <button class="btn btn-primary" type="submit">
+                <i class="bi bi-search me-1"></i>{% trans "Search" %}
+            </button>
+        </div>
+    </form>
+
+    {% if too_short %}
+    <div class="alert alert-warning">
+        {% trans "Enter at least 2 characters to search." %}
+    </div>
+
+    {% elif query %}
+        {% if total == 0 %}
+        <p class="text-muted">
+            {% blocktrans with q=query %}No results found for "{{ q }}".{% endblocktrans %}
+        </p>
+
+        {% else %}
+        <p class="text-muted mb-4">
+            {% blocktrans with count=total q=query %}
+            {{ count }} result(s) found for "{{ q }}".
+            {% endblocktrans %}
+        </p>
+
+        {% if blog_results %}
+        <section class="mb-5">
+            <h2 class="h5 mb-3 text-uppercase text-muted fw-semibold">
+                <i class="bi bi-journal-text me-2"></i>{% trans "Blog" %}
+            </h2>
+            <div class="list-group">
+                {% for post in blog_results %}
+                <a href="{% url 'app_Blog:blog_post_detail' pk=post.pk %}"
+                   class="list-group-item list-group-item-action py-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <strong>{{ post.title }}</strong>
+                        <small class="text-muted ms-3 text-nowrap">{{ post.created_at|date:"d M Y" }}</small>
+                    </div>
+                    {% if post.category %}
+                    <span class="badge bg-secondary mb-1" style="width:fit-content;">
+                        {% if lang == 'nl' %}{{ post.category.name_nl }}{% else %}{{ post.category.name_en }}{% endif %}
+                    </span>
+                    {% endif %}
+                    <p class="mb-0 small text-muted mt-1">
+                        {{ post.content|striptags|truncatewords:25 }}
+                    </p>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% if portfolio_results %}
+        <section class="mb-5">
+            <h2 class="h5 mb-3 text-uppercase text-muted fw-semibold">
+                <i class="bi bi-folder me-2"></i>{% trans "Portfolio" %}
+            </h2>
+            <div class="list-group">
+                {% for project in portfolio_results %}
+                <a href="{{ project.github_url }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="list-group-item list-group-item-action py-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <strong>
+                            {% if lang == 'nl' %}{{ project.title_nl }}{% else %}{{ project.title_en }}{% endif %}
+                        </strong>
+                        <i class="bi bi-box-arrow-up-right small text-muted"></i>
+                    </div>
+                    <p class="mb-0 small text-muted mt-1">
+                        {% if lang == 'nl' %}
+                            {{ project.description_nl|truncatewords:25 }}
+                        {% else %}
+                            {{ project.description_en|truncatewords:25 }}
+                        {% endif %}
+                    </p>
+                </a>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% if skill_results %}
+        <section class="mb-5">
+            <h2 class="h5 mb-3 text-uppercase text-muted fw-semibold">
+                <i class="bi bi-stars me-2"></i>{% trans "Skills" %}
+            </h2>
+            <div class="list-group">
+                {% for skill in skill_results %}
+                <div class="list-group-item py-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <strong>
+                            {% if lang == 'nl' %}{{ skill.name_nl }}{% else %}{{ skill.name_en }}{% endif %}
+                        </strong>
+                        {% if skill.category %}
+                        <span class="badge bg-secondary">
+                            {% if lang == 'nl' %}{{ skill.category.name_nl }}{% else %}{{ skill.category.name_en }}{% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    {% if lang == 'nl' and skill.description_nl %}
+                    <p class="mb-0 small text-muted mt-1">{{ skill.description_nl|truncatewords:25 }}</p>
+                    {% elif lang != 'nl' and skill.description_en %}
+                    <p class="mb-0 small text-muted mt-1">{{ skill.description_en|truncatewords:25 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

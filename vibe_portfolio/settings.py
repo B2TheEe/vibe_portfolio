@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "app_Work",
     "app_Blog",
     'app_Portfolio',
+    'app_Search',
     'bootstrap5',
 ]
 
