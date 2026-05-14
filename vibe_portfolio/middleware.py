@@ -7,6 +7,38 @@ from django.http import HttpResponse
 
 logger = logging.getLogger('django.security')
 
+# ---------------------------------------------------------------------------
+# Content-Security-Policy
+# ---------------------------------------------------------------------------
+# 'unsafe-inline' in script-src/style-src is required by Django admin and
+# CKEditor 5 (both inject inline scripts and styles). Removing it would break
+# the admin interface. The policy still blocks scripts from unknown external
+# origins, data: URIs, and restricts form submissions to this origin.
+_CSP = (
+    "default-src 'self'; "
+    "script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; "
+    "style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; "
+    "img-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com; "
+    "font-src 'self' cdn.jsdelivr.net; "
+    "connect-src 'self'; "
+    "worker-src 'self' blob:; "
+    "object-src 'none'; "
+    "base-uri 'self'; "
+    "form-action 'self'; "
+    "frame-ancestors 'none';"
+)
+
+
+class ContentSecurityPolicyMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        response['Content-Security-Policy'] = _CSP
+        return response
+
+
 _MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB
 
 

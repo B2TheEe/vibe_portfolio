@@ -1,6 +1,7 @@
 import re
 import bleach
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.html import mark_safe
@@ -103,6 +104,8 @@ def blog_post_new(request):
 @login_required
 def blog_post_edit(request, pk):
     post = get_object_or_404(BlogPost, pk=pk)
+    if post.author != request.user:
+        raise PermissionDenied
     if request.method == "POST":
         form = BlogPostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():

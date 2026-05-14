@@ -63,6 +63,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",                  # EERSTE: HTTPS, headers
+    "vibe_portfolio.middleware.ContentSecurityPolicyMiddleware",      # CSP-header op alle responses
     "whitenoise.middleware.WhiteNoiseMiddleware",                     # Statische bestanden via Gunicorn
     "vibe_portfolio.middleware.PayloadSizeLimitMiddleware",           # Oversized payloads weigeren
     "vibe_portfolio.middleware.RateLimitMiddleware",                  # Rate limiting (na static files)
@@ -118,14 +119,24 @@ else:
 # ---------------------------------------------------------------------------
 # Cache — gebruikt door rate-limiting middleware
 # ---------------------------------------------------------------------------
-# Standaard: LocMemCache (in-process). Bij meerdere Gunicorn workers kan elke
-# worker een eigen teller bijhouden. Gebruik voor productie een gedeelde cache
-# (bijv. Redis) via de CACHE_URL omgevingsvariabele en django-redis.
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+# Redis (aanbevolen in productie): stel REDIS_URL in om een gedeelde cache
+# te gebruiken zodat rate limits gelden over alle Gunicorn workers heen.
+# Vereist: pip install redis (zie requirements.txt)
+# Zonder REDIS_URL: LocMemCache (per-process, alleen veilig met 1 worker).
+_redis_url = os.environ.get('REDIS_URL')
+if _redis_url:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': _redis_url,
+        }
     }
-}
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        }
+    }
 
 
 # ---------------------------------------------------------------------------
