@@ -9,6 +9,7 @@ def skills(request):
 
     context = {
         'categories': [{
+            'id': category.id,
             'name': category.name_en if user_language == 'en' else category.name_nl,
             'skills': [{
                 'name': skill.name_en if user_language == 'en' else skill.name_nl,

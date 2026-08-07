@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "app_Work",
     "app_Blog",
     'app_Portfolio',
+    'app_Search',
     'bootstrap5',
 ]
 
@@ -61,8 +62,11 @@ INSTALLED_APPS = [
 # ---------------------------------------------------------------------------
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",        # EERSTE: HTTPS, headers
-    "whitenoise.middleware.WhiteNoiseMiddleware",           # Statische bestanden via Gunicorn
+    "django.middleware.security.SecurityMiddleware",                  # EERSTE: HTTPS, headers
+    "vibe_portfolio.middleware.ContentSecurityPolicyMiddleware",      # CSP-header op alle responses
+    "whitenoise.middleware.WhiteNoiseMiddleware",                     # Statische bestanden via Gunicorn
+    "vibe_portfolio.middleware.PayloadSizeLimitMiddleware",           # Oversized payloads weigeren
+    "vibe_portfolio.middleware.RateLimitMiddleware",                  # Rate limiting (na static files)
     "django.contrib.sessions.middleware.SessionMiddleware",
     'django.middleware.locale.LocaleMiddleware',            # Na sessions, vóór common
     "django.middleware.common.CommonMiddleware",
@@ -110,6 +114,40 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+
+
+# ---------------------------------------------------------------------------
+# Cache — gebruikt door rate-limiting middleware
+# ---------------------------------------------------------------------------
+# Redis (aanbevolen in productie): stel REDIS_URL in om een gedeelde cache
+# te gebruiken zodat rate limits gelden over alle Gunicorn workers heen.
+# Vereist: pip install redis (zie requirements.txt)
+# Zonder REDIS_URL: LocMemCache (per-process, alleen veilig met 1 worker).
+_redis_url = os.environ.get('REDIS_URL')
+if _redis_url:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': _redis_url,
+        }
+    }
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        }
+    }
+
+
+# ---------------------------------------------------------------------------
+# Upload-limieten — beschermt tegen oversized of misvormd POST-verkeer
+# ---------------------------------------------------------------------------
+# Maximale grootte van POST-velddata exclusief bestandsuploads (default 2.5 MB)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024   # 2 MB
+# Grens waarboven bestanden naar schijf worden geschreven in plaats van geheugen
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2 * 1024 * 1024   # 2 MB
+# Maximaal aantal POST-velden — voorkomt hash-flooding-aanvallen
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 50
 
 
 # ---------------------------------------------------------------------------

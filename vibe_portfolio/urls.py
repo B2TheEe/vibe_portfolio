@@ -25,6 +25,7 @@ urlpatterns += i18n_patterns(
     path("education", include('app_Education.urls')),
     path('work/', include('app_Work.urls')),
     path('portfolio/', include('app_Portfolio.urls')),
+    path('search/', include('app_Search.urls')),
 )
 
 if settings.DEBUG:
