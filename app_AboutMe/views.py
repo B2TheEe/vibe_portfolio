@@ -1,4 +1,3 @@
-import time
 import cloudinary.utils
 from django.shortcuts import render, redirect
 from django.http import Http404
@@ -35,15 +34,14 @@ def download_cv(request):
     user_language = translation.get_language()
     cv_field = about_me_info.cv_nl if user_language == 'nl' else about_me_info.cv_en
 
-    if not cv_field:
+    if not cv_field or not cv_field.name:
         raise Http404
 
-    url, _ = cloudinary.utils.cloudinary_url(
+    url = cloudinary.utils.private_download_url(
         cv_field.name,
+        'pdf',
         resource_type='raw',
         type='upload',
-        sign_url=True,
-        expires_at=int(time.time()) + 300,
     )
     return redirect(url)
 
