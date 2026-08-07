@@ -1,14 +1,15 @@
-from django.shortcuts import render
+import time
+import cloudinary.utils
+from django.shortcuts import render, redirect
+from django.http import Http404
 from django.utils import translation
 from .models import AboutMe
 
-def index(request):
-    about_me_info = AboutMe.objects.first()  # Assuming you have only one "About Me" entry
 
-    # Detect the user's language
+def index(request):
+    about_me_info = AboutMe.objects.first()
     user_language = translation.get_language()
 
-    # Pass the appropriate content based on the user's language
     if user_language == 'nl':
         context = {
             'title': about_me_info.title_nl,
@@ -26,6 +27,23 @@ def index(request):
             'cv': about_me_info.cv_en,
         }
 
-    #return render(request, 'about_me.html', context)
     return render(request, 'app_AboutMe/about_me.html', context)
+
+
+def download_cv(request):
+    about_me_info = AboutMe.objects.first()
+    user_language = translation.get_language()
+    cv_field = about_me_info.cv_nl if user_language == 'nl' else about_me_info.cv_en
+
+    if not cv_field:
+        raise Http404
+
+    url, _ = cloudinary.utils.cloudinary_url(
+        cv_field.name,
+        resource_type='raw',
+        type='upload',
+        sign_url=True,
+        expires_at=int(time.time()) + 300,
+    )
+    return redirect(url)
 

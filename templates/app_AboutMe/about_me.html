@@ -17,7 +17,7 @@
                 <h1>{{ title }}</h1>
                 <p class="lead">{{ description }}</p>
                 {% if cv %}
-                <a href="{{ cv.url }}" class="btn btn-accent mt-2" download>
+                <a href="{% url 'app_AboutMe:download_cv' %}" class="btn btn-accent mt-2">
                     <i class="bi bi-file-earmark-person me-2"></i>{% trans 'Download CV' %}
                 </a>
                 {% endif %}
