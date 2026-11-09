@@ -31,6 +31,10 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 _allowed = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost 127.0.0.1')
 ALLOWED_HOSTS = [h.strip() for h in _allowed.replace(',', ' ').split() if h.strip()]
 
+# Admin-URL uit omgevingsvariabele — wijzig in .env voor productie.
+# Eén bron van waarheid (gebruikt door urls.py en LOGIN_REDIRECT_URL hieronder).
+ADMIN_URL = os.environ.get('DJANGO_ADMIN_URL', 'dashboard-beheer').strip('/') + '/'
+
 
 # ---------------------------------------------------------------------------
 # Geïnstalleerde apps
@@ -54,6 +58,11 @@ INSTALLED_APPS = [
     'app_Portfolio',
     'app_Search',
     'bootstrap5',
+    # Multi-factor authenticatie (TOTP / Google Authenticator) voor /admin
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
 ]
 
 
@@ -72,6 +81,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django_otp.middleware.OTPMiddleware",                           # Na AuthenticationMiddleware: zet request.user.is_verified()
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -169,6 +179,22 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+
+# ---------------------------------------------------------------------------
+# Multi-factor authenticatie — TOTP (Google Authenticator) verplicht voor /admin
+# ---------------------------------------------------------------------------
+# django-two-factor-auth levert de inlog-wizard (wachtwoord + token) en de
+# QR-setup-pagina. django-otp's AdminSiteOTPRequired (zie urls.py, waar
+# admin.site.__class__ wordt vervangen) blokkeert elke admin-pagina totdat
+# request.user.is_verified() True is.
+LOGIN_URL = 'two_factor:login'
+LOGIN_REDIRECT_URL = '/' + ADMIN_URL
+
+# Patcht AdminSite.login() zodat een directe /admin/login/-aanroep ook naar
+# de 2FA-wizard gaat. Er is geen Twilio-gateway geconfigureerd, dus de
+# wizard biedt alleen de authenticator-app (TOTP) aan als methode.
+TWO_FACTOR_PATCH_ADMIN = True
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,10 @@
+{% extends "app_All/base.html" %}
+{# Overschrijft two_factor's standaard-template (die een eigen <html> met
+   CDN-Bootstrap meelevert) zodat de MFA-pagina's de site-look volgen en
+   binnen de CSP (vibe_portfolio/middleware.py) blijven. #}
+
+{% block extra_head %}{% block extra_media %}{% endblock %}{% endblock %}
+
+{% block content %}
+    {% block content_wrapper %}{% endblock %}
+{% endblock %}
