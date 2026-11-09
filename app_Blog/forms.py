@@ -11,25 +11,38 @@ _MAX_CONTENT_BYTES = 200 * 1024  # 200 KB
 
 
 class BlogPostForm(forms.ModelForm):
-    content = forms.CharField(widget=CKEditor5Widget(config_name='default'))
+    content_nl = forms.CharField(widget=CKEditor5Widget(config_name='default'), label="Inhoud (NL)")
+    content_en = forms.CharField(
+        widget=CKEditor5Widget(config_name='default'), required=False, label="Content (EN)",
+        help_text="Leeg = toon de Nederlandse inhoud ook op de Engelse site.",
+    )
 
     class Meta:
         model = BlogPost
-        fields = ['title', 'content', 'category', 'main_image']
+        fields = ['title_nl', 'title_en', 'content_nl', 'content_en', 'category', 'main_image']
 
-    def clean_title(self):
-        title = self.cleaned_data.get('title', '').strip()
+    def clean_title_nl(self):
+        title = self.cleaned_data.get('title_nl', '').strip()
         if not title:
-            raise ValidationError("Titel mag niet leeg zijn.")
+            raise ValidationError("Titel (NL) mag niet leeg zijn.")
         return title
 
-    def clean_content(self):
-        content = self.cleaned_data.get('content', '')
+    def _clean_content_field(self, field_name):
+        content = self.cleaned_data.get(field_name, '')
         if len(content.encode('utf-8')) > _MAX_CONTENT_BYTES:
             raise ValidationError(
                 "Inhoud is te groot (maximaal 200 KB)."
             )
         return content
+
+    def clean_content_nl(self):
+        content = self._clean_content_field('content_nl')
+        if not content.strip():
+            raise ValidationError("Inhoud (NL) mag niet leeg zijn.")
+        return content
+
+    def clean_content_en(self):
+        return self._clean_content_field('content_en')
 
     def clean_main_image(self):
         image = self.cleaned_data.get('main_image')

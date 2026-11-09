@@ -1,7 +1,7 @@
 {% extends "app_All/base.html" %}
 {% load i18n %}
 
-{% block title %}{{ post.title }}{% endblock %}
+{% block title %}{{ post.display_title }}{% endblock %}
 
 {% block content %}
 <div class="py-2">
@@ -11,11 +11,11 @@
         <img src="{{ post.main_image.url }}"
              class="img-fluid rounded mb-4 w-100"
              style="max-height:380px; object-fit:cover"
-             alt="{{ post.title }}">
+             alt="{{ post.display_title }}">
         {% endif %}
 
         <div class="blog-date mb-1">{{ post.created_at|date:"d F Y" }}</div>
-        <h1 class="mb-4">{{ post.title }}</h1>
+        <h1 class="mb-4">{{ post.display_title }}</h1>
 
         <div>{{ content }}</div>
 

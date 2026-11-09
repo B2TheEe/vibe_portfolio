@@ -79,7 +79,7 @@ def blog_post_list(request):
 
 def blog_post_detail(request, pk):
     post = get_object_or_404(BlogPost, pk=pk)
-    sanitized_content = _sanitize_html(post.content)
+    sanitized_content = _sanitize_html(post.display_content)
     return render(request, 'app_Blog/blogpost_detail.html', {
         'post': post,
         'content': sanitized_content,

@@ -29,7 +29,7 @@
         <div class="col-12 col-sm-6 col-lg-4">
             <div class="card h-100">
                 {% if post.main_image %}
-                <img src="{{ post.main_image.url }}" class="card-img-top blog-card-img" alt="{{ post.title }}">
+                <img src="{{ post.main_image.url }}" class="card-img-top blog-card-img" alt="{{ post.display_title }}">
                 {% else %}
                 <div class="blog-placeholder">
                     <i class="bi bi-journal-text" style="font-size:2.75rem; color:var(--py-blue-mid)"></i>
@@ -43,7 +43,7 @@
                     </span>
                     {% endif %}
                     <a href="{% url 'app_Blog:blog_post_detail' pk=post.pk %}" class="blog-title-link">
-                        {{ post.title }}
+                        {{ post.display_title }}
                     </a>
                 </div>
             </div>
